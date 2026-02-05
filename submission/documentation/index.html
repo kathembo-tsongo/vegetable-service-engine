@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vegetable Service Engine</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        input {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 200px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            border: none;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            min-height: 50px;
+            border: 1px solid #bdc3c7;
+        }
+        .empty-result {
+            color: #95a5a6;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🥬 Vegetable Service Engine 🥕</h1>
+        
+        <!-- Add Vegetable -->
+        <div class="section">
+            <h2>Add Vegetable</h2>
+            <input type="text" id="addName" placeholder="Vegetable name" />
+            <input type="number" id="addPrice" placeholder="Price" step="0.01" />
+            <button onclick="addVegetable()">Add Vegetable</button>
+        </div>
+        
+        <!-- Update Vegetable -->
+        <div class="section">
+            <h2>Update Vegetable Price</h2>
+            <input type="text" id="updateName" placeholder="Vegetable name" />
+            <input type="number" id="updatePrice" placeholder="New price" step="0.01" />
+            <button onclick="updateVegetable()">Update Price</button>
+        </div>
+        
+        <!-- Delete Vegetable -->
+        <div class="section">
+            <h2>Delete Vegetable</h2>
+            <input type="text" id="deleteName" placeholder="Vegetable name" />
+            <button onclick="deleteVegetable()">Delete Vegetable</button>
+        </div>
+        
+        <!-- Calculate Cost -->
+        <div class="section">
+            <h2>Calculate Cost</h2>
+            <input type="text" id="calcName" placeholder="Vegetable name" />
+            <input type="number" id="calcQty" placeholder="Quantity (kg)" step="0.1" />
+            <button onclick="calculateCost()">Calculate Cost</button>
+        </div>
+        
+        <!-- Generate Receipt -->
+        <div class="section">
+            <h2>Generate Receipt</h2>
+            <p><strong>Format:</strong> vegetable1:qty1,vegetable2:qty2</p>
+            <p><strong>Example:</strong> tomato:2,onion:1.5</p>
+            <input type="text" id="receiptItems" placeholder="Items (e.g., tomato:2,onion:1.5)" style="width: 60%;" />
+            <br>
+            <input type="number" id="receiptAmount" placeholder="Amount given" step="0.01" />
+            <input type="text" id="receiptCashier" placeholder="Cashier name" />
+            <button onclick="generateReceipt()">Generate Receipt</button>
+        </div>
+        
+        <!-- Result Display -->
+        <div id="result" class="empty-result">Results will appear here...</div>
+    </div>
+
+    <script>
+        function showResult(text) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = text;
+            resultDiv.className = '';
+        }
+
+        function showError(error) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'ERROR: ' + error;
+            resultDiv.style.color = 'red';
+        }
+
+        function addVegetable() {
+            const name = document.getElementById('addName').value;
+            const price = document.getElementById('addPrice').value;
+            
+            if (!name || !price) {
+                showError('Please enter both vegetable name and price');
+                return;
+            }
+            
+            fetch('vegetable', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `action=add&vegetable=${encodeURIComponent(name)}&price=${price}`
+            })
+            .then(r => r.text())
+            .then(showResult)
+            .catch(showError);
+        }
+
+        function updateVegetable() {
+            const name = document.getElementById('updateName').value;
+            const price = document.getElementById('updatePrice').value;
+            
+            if (!name || !price) {
+                showError('Please enter both vegetable name and new price');
+                return;
+            }
+            
+            fetch('vegetable', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `action=update&vegetable=${encodeURIComponent(name)}&price=${price}`
+            })
+            .then(r => r.text())
+            .then(showResult)
+            .catch(showError);
+        }
+
+        function deleteVegetable() {
+            const name = document.getElementById('deleteName').value;
+            
+            if (!name) {
+                showError('Please enter vegetable name');
+                return;
+            }
+            
+            fetch('vegetable', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `action=delete&vegetable=${encodeURIComponent(name)}`
+            })
+            .then(r => r.text())
+            .then(showResult)
+            .catch(showError);
+        }
+
+        function calculateCost() {
+            const name = document.getElementById('calcName').value;
+            const qty = document.getElementById('calcQty').value;
+            
+            if (!name || !qty) {
+                showError('Please enter both vegetable name and quantity');
+                return;
+            }
+            
+            fetch('vegetable', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `action=calculate&vegetable=${encodeURIComponent(name)}&quantity=${qty}`
+            })
+            .then(r => r.text())
+            .then(showResult)
+            .catch(showError);
+        }
+
+        function generateReceipt() {
+            const items = document.getElementById('receiptItems').value;
+            const amount = document.getElementById('receiptAmount').value;
+            const cashier = document.getElementById('receiptCashier').value;
+            
+            if (!items || !amount || !cashier) {
+                showError('Please fill in all fields');
+                return;
+            }
+            
+            const pairs = items.split(',');
+            let params = `action=receipt&amountGiven=${amount}&cashier=${encodeURIComponent(cashier)}`;
+            
+            pairs.forEach(pair => {
+                const [veg, qty] = pair.split(':');
+                if (veg && qty) {
+                    params += `&vegetables[]=${encodeURIComponent(veg.trim())}&quantities[]=${qty.trim()}`;
+                }
+            });
+            
+            fetch('vegetable', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: params
+            })
+            .then(r => r.text())
+            .then(showResult)
+            .catch(showError);
+        }
+    </script>
+</body>
+</html>
