@@ -91,9 +91,24 @@ public class VegetableServiceServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        response.setContentType("text/html");
+        
+        response.setContentType("text/plain");
         PrintWriter out = response.getWriter();
-        out.println("<h1>Vegetable Service Engine</h1>");
-        out.println("<p>Use POST requests to interact with the service</p>");
+        
+        String action = request.getParameter("action");
+        
+        if ("view".equals(action)) {
+            try {
+                String result = registry.executeTask(new GetAllVegetables());
+                out.println(result);
+            } catch (Exception e) {
+                out.println("ERROR: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            response.setContentType("text/html");
+            out.println("<h1>Vegetable Service Engine</h1>");
+            out.println("<p>Use POST requests to interact with the service</p>");
+        }
     }
 }

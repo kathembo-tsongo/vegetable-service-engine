@@ -1,10 +1,12 @@
 package rmi;
+
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * RMI Server that manages vegetable prices and processes client tasks
  */
@@ -29,20 +31,6 @@ public class VegetableComputeEngine extends UnicastRemoteObject implements Compu
     // Static method to access the vegetable price table from tasks
     public static Map<String, Double> getVegetablePriceTable() {
         return vegetablePriceTable;
-    }
-    
-    // Method to get all vegetables info
-    public String getAllVegetablesInfo() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("=== ALL VEGETABLES IN STORAGE ===\n\n");
-        if (vegetablePriceTable.isEmpty()) {
-            sb.append("No vegetables in storage.\n");
-        } else {
-            for (Map.Entry<String, Double> entry : vegetablePriceTable.entrySet()) {
-                sb.append(String.format("%-15s : $%.2f per kg\n", entry.getKey(), entry.getValue()));
-            }
-        }
-        return sb.toString();
     }
     
     public static void main(String[] args) {
