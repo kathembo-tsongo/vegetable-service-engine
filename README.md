@@ -78,3 +78,67 @@ Dieudonne
 ## License
 
 Educational Project - 2026
+
+==============================
+
+IMPORTANT NOTES 
+
+1.Running the app
+
+cd ~/apache-tomcat-9.0.93 ./bin/startup.sh
+
+connect rmi
+cd ~/vegetable-service-engine
+java -Djava.rmi.server.hostname=localhost -cp classes rmi.VegetableComputeEngine
+
+You should see:
+
+VegetableComputeEngine is running on port 1099...
+Initial vegetable prices loaded.
+
+Keep this terminal open and running!** The RMI server must stay running for the web application to work.
+
+Once the RMI server is running, go back to your browser and refresh the page:
+
+http://localhost:8090/vegetable-service/
+
+
+2.Step-by-Step Setup:
+On Your PC (Server Machine):
+Step 1: Find your PC's IP address
+hostname -I
+You should see something like 192.168.1.100 or 10.0.0.5. Write this down!
+Step 2: Stop the current RMI server
+Go to the terminal where RMI is running and press Ctrl+C
+Step 3: Restart RMI with your PC's actual IP
+Replace YOUR_PC_IP with the IP you found:
+cd ~/vegetable-service-engine
+java -Djava.rmi.server.hostname=YOUR_PC_IP -cp classes rmi.VegetableComputeEngine
+
+Example:
+java -Djava.rmi.server.hostname=192.168.1.100 -cp classes rmi.VegetableComputeEngine
+Step 4: Check if firewall is blocking
+sudo ufw status
+If it says "active", temporarily disable it for testing:
+sudo ufw disable
+sudo lsof -i :8090
+
+
+# On Your Client Machine:
+
+Step 1: Make sure the two machines (Client and Server) are on the SAME WiFi network.
+
+Step 2: Open the browser on your Client Machine (Chrome, Safari, Firefox, etc.)
+
+Step 3: Type this URL** (replace with your PC's IP):
+
+http://YOUR_PC_IP:8090/vegetable-service/
+
+Example: http://192.168.1.100:8090/vegetable-service/ 
+
+Test real-time sync: 
+Add a vegetable from your Client Machine browser
+Click "View All Vegetables" on your Your Server Machine - you should see it!
+Add a vegetable from your Server Machine and View it on your Client Machine
+
+
