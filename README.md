@@ -104,7 +104,7 @@ http://localhost:8090/vegetable-service/
 
 
 2.Step-by-Step Setup:
-On Your PC (Server Machine):
+On Your PC (Server Machine): -cp
 Step 1: Find your PC's IP address
 hostname -I
 You should see something like 192.168.1.100 or 10.0.0.5. Write this down!

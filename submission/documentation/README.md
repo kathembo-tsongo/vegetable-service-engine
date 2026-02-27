@@ -71,6 +71,25 @@ vegetable-service-engine/
 └── build/                # WAR file
 ```
 
+========================
+========================
+Users with rolebased access
+----------------------------
+this is the defaust code with the index in the build folder.
+-----------------------------------------------------------
+If your need a single page for users where the admin and cashier are not separated, then copy and past the index from submition/documentation/ folders to the build/index.html. then redeploy the code and run. you will seed a single page index with all manager and cashier activities confused together.
+----------------------------------------------------------------
+after updating the code, remember to redeploy the code: 
+
+cd ~/vegetable-service-engine/build
+jar -cvf vegetable-service.war *
+~/apache-tomcat-9.0.93/bin/shutdown.sh
+sleep 3
+rm -rf ~/apache-tomcat-9.0.93/webapps/vegetable-service*
+cp vegetable-service.war ~/apache-tomcat-9.0.93/webapps/
+~/apache-tomcat-9.0.93/bin/startup.sh
+sleep 5
+
 ## Author
 
 Dieudonne

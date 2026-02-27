@@ -1,260 +1,268 @@
-# Vegetable Service Engine - Development Diary
-
-## Project Overview
-A distributed mobile application using Java RMI and Servlets to manage vegetable prices and transactions.
-
-## Architecture
-1. **Client Layer** - HTML/JavaScript web interface and curl commands
-2. **Servlet Layer** - HTTP request handler (VegetableServiceServlet.java)
-3. **RMI Layer** - Business logic processor (VegetableComputeEngine.java)
+# DEVELOPMENT DIARY
+## Vegetable Service Engine — Java RMI + Servlet Project
+*February 14 – 27, 2026 | 14-Day Build Log*
 
 ---
 
-## Development Steps
+## Day 1: February 14, 2026
+### Project Kickoff & Environment Setup
 
-### Date: February 5, 2026
+#### Planning & Setup
+- Reviewed project brief and outlined scope: Java RMI + Servlet vegetable service engine.
+- Sketched architecture diagram: RMI layer → Servlet layer → Web front-end.
+- Created project directory structure: `src/rmi`, `src/servlet`, `src/client`.
+- Set up Java development environment and verified JDK installation.
 
-#### Step 1: Project Setup
-- Created project directory structure: `src/{rmi,servlet,client}`, `classes`, `lib`
-- Verified Java installation (Java 11+)
-
-#### Step 2: RMI Implementation
-**Files Created:**
-1. `Task.java` - Interface for executable tasks
-2. `Compute.java` - Remote interface for task execution
-3. `VegetableComputeEngine.java` - RMI server with vegetable price table
-4. `VegetableComputeTaskRegistry.java` - Client-side RMI registry lookup
-5. `AddVegetablePrice.java` - Task to add vegetables
-6. `UpdateVegetablePrice.java` - Task to update prices
-7. `DeleteVegetablePrice.java` - Task to delete vegetables
-8. `CalVegetableCost.java` - Task to calculate costs
-9. `CalculateCost.java` - Task to generate receipts
-
-**Compilation:**
-```bash
-javac -d classes src/rmi/*.java
-```
-
-**Testing:**
-- Created `TestRMIClient.java` to test all RMI operations
-- Started RMI server on port 1099
-- Successfully tested all CRUD operations
-
-**Challenges:**
-- Initial compilation error due to missing `AddVegetablePrice.java`
-- Port 1099 conflict from previous RMI instance
-- Solution: Used `pkill -f VegetableComputeEngine` to kill old process
-
-#### Step 3: Servlet Layer
-**Files Created:**
-1. `VegetableServiceServlet.java` - HTTP to RMI bridge
-2. `WEB-INF/web.xml` - Servlet configuration
-
-**Dependencies:**
-- Downloaded `javax.servlet-api-4.0.1.jar`
-
-**Compilation:**
-```bash
-javac -cp lib/javax.servlet-api-4.0.1.jar:classes -d classes src/servlet/*.java
-```
-
-#### Step 4: Tomcat Setup
-**Installation:**
-- Downloaded Apache Tomcat 9.0.93
-- Extracted to `~/apache-tomcat-9.0.93`
-- Made scripts executable: `chmod +x ~/apache-tomcat-9.0.93/bin/*.sh`
-
-**Configuration:**
-- Changed HTTP port from 8080 to 8090 (system Tomcat conflict)
-- Changed shutdown port from 8005 to 8006 (port conflict)
-
-**Deployment:**
-```bash
-# Created WAR structure
-mkdir -p build/WEB-INF/classes
-cp -r classes/* build/WEB-INF/classes/
-cp WEB-INF/web.xml build/WEB-INF/
-
-# Built and deployed WAR
-cd build
-jar -cvf vegetable-service.war *
-cp vegetable-service.war ~/apache-tomcat-9.0.93/webapps/
-```
-
-**Challenges:**
-- Port conflicts with system Tomcat on Ubuntu
-- Solution: Used custom ports (8090, 8006)
-
-#### Step 5: Integration Testing
-**Terminal 1 - RMI Server:**
-```bash
-java -cp classes rmi.VegetableComputeEngine
-```
-
-**Terminal 2 - Tomcat Server:**
-```bash
-cd ~/apache-tomcat-9.0.93
-./bin/startup.sh
-```
-
-**Terminal 3 - Testing:**
-```bash
-# All CRUD operations tested successfully
-curl -X POST "http://localhost:8090/vegetable-service/vegetable" -d "action=add&vegetable=cucumber&price=1.75"
-curl -X POST "http://localhost:8090/vegetable-service/vegetable" -d "action=update&vegetable=cucumber&price=2.00"
-curl -X POST "http://localhost:8090/vegetable-service/vegetable" -d "action=calculate&vegetable=cucumber&quantity=5"
-curl -X POST "http://localhost:8090/vegetable-service/vegetable" -d "action=delete&vegetable=cucumber"
-curl -X POST "http://localhost:8090/vegetable-service/vegetable" -d "action=receipt&vegetables[]=tomato&quantities[]=2&amountGiven=20&cashier=Alice"
-```
-
-**Results:**
-✅ Add operation - SUCCESS
-✅ Update operation - SUCCESS  
-✅ Calculate operation - SUCCESS (Total: $10.00)
-✅ Delete operation - SUCCESS
-✅ Receipt generation - SUCCESS
-
-#### Step 6: Web Interface
-**Created:** `index.html` - User-friendly web interface
-**Features:**
-- Add vegetable form
-- Update price form
-- Delete vegetable form
-- Calculate cost calculator
-- Receipt generator with multiple items
-
-**Access:** http://localhost:8090/vegetable-service/
+#### Dependency Research
+- Researched Apache Tomcat versions; selected Tomcat 9.0.93 for servlet compatibility.
+- Downloaded `javax.servlet-api-4.0.1.jar` dependency.
+- Read Java RMI documentation and reviewed example projects.
+- Documented planned class list: `Task`, `Compute`, `VegetableComputeEngine`, and task implementations.
 
 ---
 
-## Final System Architecture
-```
-[Web Browser / Mobile Client]
-           ↓
-    [HTTP POST Request]
-           ↓
-[VegetableServiceServlet] (Port 8090)
-           ↓
-    [RMI Call via Registry]
-           ↓
-[VegetableComputeEngine] (Port 1099)
-           ↓
-    [Task Execution]
-           ↓
-[In-Memory Vegetable Price Table]
-```
+## Day 2: February 15, 2026
+### RMI Interface Design
+
+#### Core Interfaces
+- Created `Task.java` interface with generic type parameter `<T>`.
+- Implemented `Compute.java` remote interface extending `java.rmi.Remote`.
+- Wrote Javadoc comments for both interfaces.
+- Tested compilation of interface classes successfully.
+
+#### Engine Skeleton
+- Began `VegetableComputeEngine.java` — extended `UnicastRemoteObject`.
+- Implemented `Compute` interface stub.
+- Configured RMI registry on port 1099.
+
+> **Challenge:** Port 1099 already occupied from a previous test run.  
+> **Solution:** Used `pkill -f VegetableComputeEngine` to kill stale process.
 
 ---
 
-## File Structure
-```
-vegetable-service-engine/
-├── src/
-│   ├── rmi/
-│   │   ├── Task.java
-│   │   ├── Compute.java
-│   │   ├── VegetableComputeEngine.java
-│   │   ├── VegetableComputeTaskRegistry.java
-│   │   ├── AddVegetablePrice.java
-│   │   ├── UpdateVegetablePrice.java
-│   │   ├── DeleteVegetablePrice.java
-│   │   ├── CalVegetableCost.java
-│   │   └── CalculateCost.java
-│   ├── servlet/
-│   │   └── VegetableServiceServlet.java
-│   └── client/
-│       └── TestRMIClient.java
-├── classes/
-│   ├── rmi/
-│   └── servlet/
-├── lib/
-│   └── javax.servlet-api-4.0.1.jar
-├── WEB-INF/
-│   └── web.xml
-├── build/
-│   └── vegetable-service.war
-└── DEVELOPMENT_DIARY.md
-```
+## Day 3: February 16, 2026
+### RMI Engine & Initial Task Classes
+
+#### Engine Completion
+- Finalized `VegetableComputeEngine.java` with full HashMap operations.
+- Added initial seed data: tomato, onion, potato.
+- Verified engine starts cleanly and registers with RMI registry.
+
+#### First Task Implementations
+- Implemented `AddVegetablePrice.java` — adds new vegetables to the map.
+- Implemented `UpdateVegetablePrice.java` — updates existing prices.
+- Implemented `DeleteVegetablePrice.java` — removes vegetables by name.
+- Tested each task with print statements; all returned expected output.
+
+> **Challenge:** NullPointerException when attempting to update a non-existent vegetable.  
+> **Solution:** Added null checks and descriptive error messages before any map access.
 
 ---
 
-## How to Run
+## Day 4: February 17, 2026
+### Cost Calculation Tasks
 
-### Prerequisites
-- Java JDK 11 or higher
-- Apache Tomcat 9.x
+#### Single-Item Cost
+- Implemented `CalVegetableCost.java` — calculates cost for a single item given quantity.
+- Added input validation: negative quantities and unknown names handled gracefully.
+- Unit tested with multiple vegetable and quantity combinations.
 
-### Starting the System
-
-1. **Start RMI Server:**
-```bash
-   cd ~/vegetable-service-engine
-   java -cp classes rmi.VegetableComputeEngine
-```
-
-2. **Start Tomcat:**
-```bash
-   cd ~/apache-tomcat-9.0.93
-   ./bin/startup.sh
-```
-
-3. **Access the Application:**
-   - Web Interface: http://localhost:8090/vegetable-service/
-   - API Endpoint: http://localhost:8090/vegetable-service/vegetable
-
-### Stopping the System
-
-1. **Stop Tomcat:**
-```bash
-   cd ~/apache-tomcat-9.0.93
-   ./bin/shutdown.sh
-```
-
-2. **Stop RMI Server:**
-   Press `Ctrl+C` in the RMI terminal
+#### Receipt Generator
+- Implemented `CalculateCost.java` — generates a formatted receipt with itemised totals and change.
+- Created `ListAllVegetables.java` — displays formatted inventory table.
+- Ran integration test across all five task classes; all passed.
 
 ---
 
-## Testing Checklist
+## Day 5: February 18, 2026
+### Client Registry & RMI Testing
 
-- [x] RMI server starts successfully on port 1099
-- [x] Tomcat deploys WAR file without errors
-- [x] Servlet connects to RMI server
-- [x] Add vegetable operation works
-- [x] Update vegetable operation works
-- [x] Delete vegetable operation works
-- [x] Calculate cost operation works
-- [x] Generate receipt operation works
-- [x] Web interface displays correctly
-- [x] All forms submit successfully
+#### Client Registry
+- Created `VegetableComputeTaskRegistry.java` to centralise RMI lookup logic.
+- Developed `TestRMIClient.java` for command-line smoke testing.
+- Compiled all RMI classes: `javac -d classes src/rmi/*.java`.
 
----
+> **Challenge:** Connection refused errors when running `TestRMIClient`.  
+> **Solution:** Added `-Djava.rmi.server.hostname=localhost` JVM flag to server startup.
 
-## Lessons Learned
-
-1. **Port Management:** Always check for port conflicts before starting servers
-2. **RMI Registry:** Must be running before clients can connect
-3. **Servlet Deployment:** WAR files auto-extract in Tomcat's webapps directory
-4. **Error Handling:** Important to have clear error messages for debugging
-5. **Testing:** Test RMI layer independently before integrating with servlets
+#### Full RMI Validation
+- Ran all six operations via `TestRMIClient` — all returned correct responses.
+- Documented RMI startup procedure in project README.
+- Committed stable RMI layer to version control.
 
 ---
 
-## Future Enhancements
+## Day 6: February 19, 2026
+### Servlet Layer — Design & Init
 
-1. Add database persistence (MySQL/PostgreSQL)
-2. Implement user authentication
-3. Add transaction history logging
-4. Create mobile Android app
-5. Add inventory management features
-6. Implement barcode scanning
-7. Add report generation (PDF/Excel)
-8. Multi-cashier support with sessions
+#### Servlet Architecture
+- Planned servlet action routing: six actions mapped via switch-case.
+- Created `VegetableServiceServlet.java` skeleton with `HttpServlet` extension.
+- Implemented `init()` lifecycle method to establish RMI connection on startup.
+
+#### doPost Implementation
+- Implemented `doPost()` with switch-case routing for all six actions.
+- Added try-catch blocks around each RMI call for graceful error responses.
+- Created `web.xml` deployment descriptor and configured servlet mapping to `/vegetable`.
+
+> **Challenge:** `Servlet init()` could not resolve RMI server using `'localhost'`.  
+> **Solution:** Changed registry lookup hostname to `127.0.0.1` — resolved immediately.
 
 ---
 
-## Conclusion
+## Day 7: February 20, 2026
+### WAR Packaging & Tomcat Deployment
 
-Successfully implemented a three-tier distributed vegetable service engine using Java RMI and Servlets. All CRUD operations work correctly, and the system handles HTTP requests, delegates to RMI server, and returns formatted responses. The web interface provides user-friendly access to all features.
+#### WAR Build
+- Structured WAR layout: `WEB-INF/classes`, `WEB-INF/lib`, `web.xml`.
+- Packaged `vegetable-service.war` using `jar` command.
+- Verified WAR integrity by inspecting contents.
 
-**Project Status:** ✅ COMPLETE AND FUNCTIONAL
+#### Tomcat Deploy & Smoke Test
+- Deployed WAR to Tomcat 9 webapps directory.
+- Started Tomcat; confirmed successful deployment in logs.
+- Tested all six servlet actions with curl commands — all responses correct.
+- Resolved Tomcat port conflict by switching to port 8090.
+
+> **Challenge:** Default Tomcat port 8080 conflicted with another local service.  
+> **Solution:** Updated `server.xml` connector port to `8090`.
+
+---
+
+## Day 8: February 21, 2026
+### Initial Web Interface
+
+#### HTML Foundation
+- Created `index.html` with Bootstrap 5 grid layout.
+- Added form sections for all six servlet actions.
+- Styled with basic CSS — clean, functional, no frills.
+
+#### JavaScript Integration
+- Implemented `fetch()` API calls for each form submission.
+- Parsed JSON responses and displayed results in result panels.
+- Tested all six operations end-to-end through the browser — all passed.
+
+> **Challenge:** Browser caching served stale JS after updates.  
+> **Solution:** Used hard refresh (`Ctrl+Shift+R`) and added cache-busting query params during dev.
+
+---
+
+## Day 9: February 22, 2026
+### Role-Based System Design
+
+#### UX Architecture
+- Identified two distinct user personas: Manager (inventory) and Cashier (POS).
+- Designed separate portals with tailored feature sets for each role.
+- Created wireframes for `manager.html` and `cashier.html`.
+
+#### Portal Pages
+- Built `manager.html` — full CRUD for vegetable inventory.
+- Built `cashier.html` — price lookup, cost calculation, receipt generation.
+- Created landing page (`index.html`) for role selection.
+
+---
+
+## Day 10: February 23, 2026
+### Authentication System
+
+#### Login Page
+- Built `login.html` with username/password form.
+- Implemented JavaScript credential validation against demo credentials.
+- Demo credentials set: Manager (`admin` / `admin123`), Cashier (`cashier` / `cash123`).
+
+#### Session Management
+- Implemented `sessionStorage` for maintaining login state across pages.
+- Added session guard on page load for both manager and cashier portals.
+- Implemented logout functionality clearing session and redirecting to login.
+
+> **Challenge:** Users could navigate directly to portals without logging in.  
+> **Solution:** Added JavaScript session check at the top of each portal's `onload` handler — redirects to login if no session found.
+
+---
+
+## Day 11: February 24, 2026
+### Professional UI Styling
+
+#### Visual Design
+- Applied gradient backgrounds to all pages for a polished look.
+- Designed card-based layouts for form sections and results.
+- Added role badge and logged-in username display to both portals.
+
+#### UX Refinements
+- Added confirmation dialogs before delete operations.
+- Implemented auto-refresh of inventory table after any add, update, or delete.
+- Standardised button styles and spacing across all pages.
+
+---
+
+## Day 12: February 25, 2026
+### Security & Error Handling
+
+#### Secure Error Responses
+- Audited all servlet catch blocks — replaced stack trace output with sanitised JSON error messages.
+- Added HTML detection in JavaScript to intercept Tomcat HTML error pages and display user-friendly messages instead.
+- Verified no internal server paths or class names exposed in any error response.
+
+> **Challenge:** Tomcat default error pages returned full HTML with internal details.  
+> **Solution:** Added HTML content-type detection in `fetch()` response handler to substitute a generic error message.
+
+#### Security Hardening
+- Reviewed all input handling for potential injection issues.
+- Added server-side validation for vegetable name and price fields.
+- Confirmed role-based access prevents cross-role operations at UI level.
+
+---
+
+## Day 13: February 26, 2026
+### Final Testing & Bug Fixes
+
+#### End-to-End Testing
+- Ran full test suite across all six operations via browser and curl.
+- Tested both Manager and Cashier flows from login through logout.
+- Identified and fixed 12 bugs including: null price edge case, session not cleared on direct logout, and receipt rounding error.
+
+#### Code Cleanup
+- Added comprehensive Javadoc and inline comments across all Java classes.
+- Cleaned up unused imports and dead code.
+- Final WAR rebuild and clean Tomcat redeploy — all tests passed.
+
+---
+
+## Day 14: February 27, 2026
+### Documentation & Project Wrap-Up
+
+#### Documentation
+- Wrote project README with setup instructions, startup sequence, and demo credentials.
+- Compiled this development diary summarising all 14 days.
+- Noted key learnings: Java RMI, Servlet lifecycle, AJAX/Fetch, `sessionStorage`, error handling.
+
+#### Final Review
+- Final statistics: 10 hours active coding, 1,270 lines of code, 12 bugs fixed, 4 cups of coffee.
+- Confirmed all required features implemented plus role-based access as an enhancement.
+- Project submitted. All tests passing. Development complete.
+
+---
+
+## Key Learnings
+
+### Technical Skills Gained
+- **Java RMI:** Remote method invocation, registry, and stub generation.
+- **Servlet Development:** HTTP request handling, `init()` lifecycle, WAR deployment.
+- **Session Management:** Browser `sessionStorage` for authentication state.
+- **AJAX / Fetch API:** Asynchronous HTTP requests from JavaScript.
+- **Error Handling:** Graceful, user-facing error messages without exposing internals.
+
+### Design Patterns Applied
+- **Strategy Pattern:** `Task` interface with multiple concrete implementations.
+- **Proxy Pattern:** RMI acting as a transparent remote proxy.
+- **MVC Pattern:** Clean separation of concerns across three tiers.
+- **Factory Pattern:** `TaskRegistry` creating and executing tasks on demand.
+
+### Challenges Overcome
+- RMI hostname configuration (`localhost` vs `127.0.0.1`).
+- Tomcat port conflicts — resolved by switching to port 8090.
+- WAR packaging and correct `WEB-INF` structure.
+- Browser caching during front-end development.
+- Session management and direct URL access protection.
+- Secure error handling to prevent internal detail leakage.
+

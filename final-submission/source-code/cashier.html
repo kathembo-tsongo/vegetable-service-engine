@@ -1,11 +1,9 @@
-
-<!-- Index for the single user interface -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vegetable Service Engine - Professional POS</title>
+    <title>Cashier Portal - Vegetable Service Engine</title>
     <style>
         * {
             margin: 0;
@@ -15,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -36,6 +34,16 @@
         .header p {
             font-size: 1.1em;
             opacity: 0.9;
+        }
+
+        .role-badge {
+            background: white;
+            color: #00f2fe;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
         }
 
         .container {
@@ -68,7 +76,7 @@
             align-items: center;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 3px solid #667eea;
+            border-bottom: 3px solid #4facfe;
         }
 
         .card-icon {
@@ -108,7 +116,7 @@
         input:focus,
         textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #4facfe;
         }
 
         textarea {
@@ -119,7 +127,7 @@
         button {
             width: 100%;
             padding: 14px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -132,7 +140,7 @@
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
         }
 
         button:active {
@@ -153,7 +161,7 @@
             justify-content: space-between;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 3px solid #667eea;
+            border-bottom: 3px solid #4facfe;
         }
 
         .result-header h2 {
@@ -237,58 +245,24 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🥬 Vegetable Service Engine 🥕</h1>
-        <p>Professional Point of Sale System</p>
+   <div class="header">
+        <h1>💰 Cashier Portal</h1>
+        <p>Point of Sale System</p>
+        <div style="display: flex; justify-content: center; gap: 15px; align-items: center; margin-top: 15px;">
+            <div class="role-badge">👤 CASHIER: <span id="username"></span></div>
+            <button onclick="logout()" style="width: auto; padding: 8px 20px; font-size: 0.9em; background: #e53e3e;">Logout</button>
+        </div>
     </div>
-
     <div class="container">
         <div class="grid">
-            <!-- Add Vegetable Card -->
+            <!-- View Inventory Card -->
             <div class="card">
                 <div class="card-header">
-                    <span class="card-icon">➕</span>
-                    <h2>Add New Vegetable</h2>
+                    <span class="card-icon">📋</span>
+                    <h2>View Prices</h2>
                 </div>
-                <div class="form-group">
-                    <label for="addName">Vegetable Name</label>
-                    <input type="text" id="addName" placeholder="e.g., Spinach">
-                </div>
-                <div class="form-group">
-                    <label for="addPrice">Price per kg ($)</label>
-                    <input type="number" id="addPrice" placeholder="0.00" step="0.01" min="0">
-                </div>
-                <button onclick="addVegetable()">Add to Inventory</button>
-            </div>
-
-            <!-- Update Price Card -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-icon">✏️</span>
-                    <h2>Update Price</h2>
-                </div>
-                <div class="form-group">
-                    <label for="updateName">Vegetable Name</label>
-                    <input type="text" id="updateName" placeholder="e.g., Tomato">
-                </div>
-                <div class="form-group">
-                    <label for="updatePrice">New Price per kg ($)</label>
-                    <input type="number" id="updatePrice" placeholder="0.00" step="0.01" min="0">
-                </div>
-                <button onclick="updateVegetable()">Update Price</button>
-            </div>
-
-            <!-- Delete Vegetable Card -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-icon">🗑️</span>
-                    <h2>Remove Vegetable</h2>
-                </div>
-                <div class="form-group">
-                    <label for="deleteName">Vegetable Name</label>
-                    <input type="text" id="deleteName" placeholder="e.g., Carrot">
-                </div>
-                <button onclick="deleteVegetable()">Remove from Inventory</button>
+                <p style="color: #4a5568; margin-bottom: 15px;">View current vegetable prices to help customers.</p>
+                <button onclick="viewInventory()">View All Prices</button>
             </div>
 
             <!-- Calculate Cost Card -->
@@ -308,25 +282,15 @@
                 <button onclick="calculateCost()">Calculate Total</button>
             </div>
 
-            <!-- View Inventory Card -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-icon">📋</span>
-                    <h2>View Inventory</h2>
-                </div>
-                <p style="color: #4a5568; margin-bottom: 15px;">Click below to see all vegetables and their prices in the system.</p>
-                <button onclick="viewInventory()">View All Vegetables</button>
-            </div>
-
-            <!-- General transaction -->
+            <!-- Generate Receipt Card -->
             <div class="card">
                 <div class="card-header">
                     <span class="card-icon">🧾</span>
-                    <h2>Generate Transaction Receipt</h2>
+                    <h2>Generate Receipt</h2>
                 </div>
                 
                 <div class="info-box">
-                    <strong>Instructions:</strong> Enter items in format: <code>vegetable1:quantity1,vegetable2:quantity2</code>
+                    <strong>Format:</strong> <code>vegetable1:quantity1,vegetable2:quantity2</code>
                     <br>Example: <code>tomato:2,onion:1.5,potato:3</code>
                 </div>
 
@@ -342,14 +306,14 @@
                         <input type="number" id="receiptAmount" placeholder="0.00" step="0.01" min="0">
                     </div>
                     <div class="form-group">
-                        <label for="receiptCashier">Cashier Name</label>
-                        <input type="text" id="receiptCashier" placeholder="Enter cashier name">
+                        <label for="receiptCashier">Your Name</label>
+                        <input type="text" id="receiptCashier" placeholder="Enter your name">
                     </div>
                 </div>
 
-                <button onclick="generateReceipt()">Generate uiuiuiuiuiu Receipt</button>
-            </div>        
-        </div>        
+                <button onclick="generateReceipt()">Generate Receipt</button>
+            </div>
+        </div>
 
         <!-- Result Display -->
         <div class="result-section">
@@ -364,6 +328,12 @@
     </div>
 
     <script>
+        // Check if user is logged in
+        if (sessionStorage.getItem('loggedIn') !== 'true' || 
+            sessionStorage.getItem('role') !== 'cashier') {
+            window.location.href = 'login.html?role=cashier';
+        }
+
         function showResult(text, type = 'normal') {
             const resultDiv = document.getElementById('result');
             resultDiv.textContent = text;
@@ -378,92 +348,6 @@
         function clearResult() {
             document.getElementById('result').className = 'empty-result';
             document.getElementById('result').textContent = 'Results will appear here after performing an operation...';
-        }
-
-        async function addVegetable() {
-            const name = document.getElementById('addName').value.trim();
-            const price = document.getElementById('addPrice').value;
-            
-            if (!name || !price) {
-                showError('Please enter both vegetable name and price');
-                return;
-            }
-            
-            try {
-                const response = await fetch('vegetable', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    body: `action=add&vegetable=${encodeURIComponent(name)}&price=${price}`
-                });
-                const result = await response.text();
-                showResult(result, result.includes('SUCCESS') ? 'success' : 'error');
-                
-                if (result.includes('SUCCESS')) {
-                    document.getElementById('addName').value = '';
-                    document.getElementById('addPrice').value = '';
-                    viewInventory();
-                }
-            } catch (error) {
-                showError(error.message);
-            }
-        }
-
-        async function updateVegetable() {
-            const name = document.getElementById('updateName').value.trim();
-            const price = document.getElementById('updatePrice').value;
-            
-            if (!name || !price) {
-                showError('Please enter both vegetable name and new price');
-                return;
-            }
-            
-            try {
-                const response = await fetch('vegetable', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    body: `action=update&vegetable=${encodeURIComponent(name)}&price=${price}`
-                });
-                const result = await response.text();
-                showResult(result, result.includes('SUCCESS') ? 'success' : 'error');
-                
-                if (result.includes('SUCCESS')) {
-                    document.getElementById('updateName').value = '';
-                    document.getElementById('updatePrice').value = '';
-                    viewInventory();
-                }
-            } catch (error) {
-                showError(error.message);
-            }
-        }
-
-        async function deleteVegetable() {
-            const name = document.getElementById('deleteName').value.trim();
-            
-            if (!name) {
-                showError('Please enter vegetable name');
-                return;
-            }
-            
-            if (!confirm(`Are you sure you want to delete "${name}"?`)) {
-                return;
-            }
-            
-            try {
-                const response = await fetch('vegetable', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    body: `action=delete&vegetable=${encodeURIComponent(name)}`
-                });
-                const result = await response.text();
-                showResult(result, result.includes('SUCCESS') ? 'success' : 'error');
-                
-                if (result.includes('SUCCESS')) {
-                    document.getElementById('deleteName').value = '';
-                    viewInventory();
-                }
-            } catch (error) {
-                showError(error.message);
-            }
         }
 
         async function calculateCost() {
@@ -482,9 +366,16 @@
                     body: `action=calculate&vegetable=${encodeURIComponent(name)}&quantity=${qty}`
                 });
                 const result = await response.text();
+                
+                // Check if response is an HTML error page
+                if (result.includes('<!doctype html>') || result.includes('<html')) {
+                    showError('System temporarily unavailable. Please contact IT support.');
+                    return;
+                }
+                
                 showResult(result, result.includes('ERROR') ? 'error' : 'success');
             } catch (error) {
-                showError(error.message);
+                showError('Unable to connect to server. Please try again later.');
             }
         }
 
@@ -496,9 +387,16 @@
                     body: 'action=list'
                 });
                 const result = await response.text();
+                
+                // Check if response is an HTML error page
+                if (result.includes('<!doctype html>') || result.includes('<html')) {
+                    showError('System temporarily unavailable. Please contact IT support.');
+                    return;
+                }
+                
                 showResult(result, result.includes('ERROR') ? 'error' : 'normal');
             } catch (error) {
-                showError(error.message);
+                showError('Unable to connect to server. Please try again later.');
             }
         }
 
@@ -508,7 +406,7 @@
             const cashier = document.getElementById('receiptCashier').value.trim();
             
             if (!items || !amount || !cashier) {
-                showError('Please fill in all fields (items, amount given, and cashier name)');
+                showError('Please fill in all fields (items, amount given, and your name)');
                 return;
             }
             
@@ -529,6 +427,13 @@
                     body: params
                 });
                 const result = await response.text();
+                
+                // Check if response is an HTML error page
+                if (result.includes('<!doctype html>') || result.includes('<html')) {
+                    showError('System temporarily unavailable. Please contact IT support.');
+                    return;
+                }
+                
                 showResult(result, result.includes('ERROR') ? 'error' : 'normal');
                 
                 if (!result.includes('ERROR')) {
@@ -537,8 +442,18 @@
                     document.getElementById('receiptCashier').value = '';
                 }
             } catch (error) {
-                showError(error.message);
+                showError('Unable to connect to server. Please try again later.');
             }
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        // Display username
+        if (document.getElementById('username')) {
+            document.getElementById('username').textContent = sessionStorage.getItem('username') || 'User';
         }
 
         document.addEventListener('DOMContentLoaded', function() {
