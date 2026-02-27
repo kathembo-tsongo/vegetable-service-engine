@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashier Portal - Vegetable Service Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .role-badge {
+            background: white;
+            color: #00f2fe;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #4facfe;
+        }
+
+        .card-icon {
+            font-size: 2em;
+            margin-right: 15px;
+        }
+
+        .card h2 {
+            color: #2d3748;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-top: 25px;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #4facfe;
+        }
+
+        .result-header h2 {
+            color: #2d3748;
+            font-size: 1.5em;
+        }
+
+        .clear-btn {
+            width: auto;
+            padding: 8px 20px;
+            font-size: 0.9em;
+            background: #e53e3e;
+        }
+
+        .clear-btn:hover {
+            box-shadow: 0 5px 15px rgba(229, 62, 62, 0.4);
+        }
+
+        #result {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 100px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            color: #2d3748;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .empty-result {
+            color: #a0aec0;
+            font-style: italic;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success {
+            color: #38a169;
+            font-weight: 600;
+        }
+
+        .error {
+            color: #e53e3e;
+            font-weight: 600;
+        }
+
+        .hint {
+            font-size: 0.85em;
+            color: #718096;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .info-box {
+            background: #edf2f7;
+            border-left: 4px solid #4299e1;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .info-box strong {
+            color: #2c5282;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+   <div class="header">
+        <h1>💰 Cashier Portal</h1>
+        <p>Point of Sale System</p>
+        <div style="display: flex; justify-content: center; gap: 15px; align-items: center; margin-top: 15px;">
+            <div class="role-badge">👤 CASHIER: <span id="username"></span></div>
+            <button onclick="logout()" style="width: auto; padding: 8px 20px; font-size: 0.9em; background: #e53e3e;">Logout</button>
+        </div>
+    </div>
+    <div class="container">
+        <div class="grid">
+            <!-- View Inventory Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">📋</span>
+                    <h2>View Prices</h2>
+                </div>
+                <p style="color: #4a5568; margin-bottom: 15px;">View current vegetable prices to help customers.</p>
+                <button onclick="viewInventory()">View All Prices</button>
+            </div>
+
+            <!-- Calculate Cost Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🧮</span>
+                    <h2>Calculate Cost</h2>
+                </div>
+                <div class="form-group">
+                    <label for="calcName">Vegetable Name</label>
+                    <input type="text" id="calcName" placeholder="e.g., Onion">
+                </div>
+                <div class="form-group">
+                    <label for="calcQty">Quantity (kg)</label>
+                    <input type="number" id="calcQty" placeholder="0.0" step="0.1" min="0">
+                </div>
+                <button onclick="calculateCost()">Calculate Total</button>
+            </div>
+
+            <!-- Generate Receipt Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🧾</span>
+                    <h2>Generate Receipt</h2>
+                </div>
+                
+                <div class="info-box">
+                    <strong>Format:</strong> <code>vegetable1:quantity1,vegetable2:quantity2</code>
+                    <br>Example: <code>tomato:2,onion:1.5,potato:3</code>
+                </div>
+
+                <div class="form-group">
+                    <label for="receiptItems">Purchase Items</label>
+                    <textarea id="receiptItems" placeholder="tomato:2,onion:1.5,potato:3" rows="2"></textarea>
+                    <div class="hint">Format: vegetable:quantity (separated by commas)</div>
+                </div>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="receiptAmount">Amount Given ($)</label>
+                        <input type="number" id="receiptAmount" placeholder="0.00" step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="receiptCashier">Your Name</label>
+                        <input type="text" id="receiptCashier" placeholder="Enter your name">
+                    </div>
+                </div>
+
+                <button onclick="generateReceipt()">Generate Receipt</button>
+            </div>
+        </div>
+
+        <!-- Result Display -->
+        <div class="result-section">
+            <div class="result-header">
+                <h2>📊 Transaction Result</h2>
+                <button class="clear-btn" onclick="clearResult()">Clear</button>
+            </div>
+            <div id="result" class="empty-result">
+                Results will appear here after performing an operation...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        if (sessionStorage.getItem('loggedIn') !== 'true' || 
+            sessionStorage.getItem('role') !== 'cashier') {
+            window.location.href = 'login.html?role=cashier';
+        }
+
+        function showResult(text, type = 'normal') {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = text;
+            resultDiv.className = type === 'success' ? 'success' : type === 'error' ? 'error' : '';
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function showError(error) {
+            showResult('❌ ERROR: ' + error, 'error');
+        }
+
+        function clearResult() {
+            document.getElementById('result').className = 'empty-result';
+            document.getElementById('result').textContent = 'Results will appear here after performing an operation...';
+        }
+
+        async function calculateCost() {
+            const name = document.getElementById('calcName').value.trim();
+            const qty = document.getElementById('calcQty').value;
+            
+            if (!name || !qty) {
+                showError('Please enter both vegetable name and quantity');
+                return;
+            }
+            
+            try {
+                const response = await fetch('vegetable', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: `action=calculate&vegetable=${encodeURIComponent(name)}&quantity=${qty}`
+                });
+                const result = await response.text();
+                
+                // Check if response is an HTML error page
+                if (result.includes('<!doctype html>') || result.includes('<html')) {
+                    showError('System temporarily unavailable. Please contact IT support.');
+                    return;
+                }
+                
+                showResult(result, result.includes('ERROR') ? 'error' : 'success');
+            } catch (error) {
+                showError('Unable to connect to server. Please try again later.');
+            }
+        }
+
+        async function viewInventory() {
+            try {
+                const response = await fetch('vegetable', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: 'action=list'
+                });
+                const result = await response.text();
+                
+                // Check if response is an HTML error page
+                if (result.includes('<!doctype html>') || result.includes('<html')) {
+                    showError('System temporarily unavailable. Please contact IT support.');
+                    return;
+                }
+                
+                showResult(result, result.includes('ERROR') ? 'error' : 'normal');
+            } catch (error) {
+                showError('Unable to connect to server. Please try again later.');
+            }
+        }
+
+        async function generateReceipt() {
+            const items = document.getElementById('receiptItems').value.trim();
+            const amount = document.getElementById('receiptAmount').value;
+            const cashier = document.getElementById('receiptCashier').value.trim();
+            
+            if (!items || !amount || !cashier) {
+                showError('Please fill in all fields (items, amount given, and your name)');
+                return;
+            }
+            
+            try {
+                const pairs = items.split(',');
+                let params = `action=receipt&amountGiven=${amount}&cashier=${encodeURIComponent(cashier)}`;
+                
+                for (const pair of pairs) {
+                    const [veg, qty] = pair.split(':');
+                    if (veg && qty) {
+                        params += `&vegetables[]=${encodeURIComponent(veg.trim())}&quantities[]=${qty.trim()}`;
+                    }
+                }
+                
+                const response = await fetch('vegetable', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: params
+                });
+                const result = await response.text();
+                
+                // Check if response is an HTML error page
+                if (result.includes('<!doctype html>') || result.includes('<html')) {
+                    showError('System temporarily unavailable. Please contact IT support.');
+                    return;
+                }
+                
+                showResult(result, result.includes('ERROR') ? 'error' : 'normal');
+                
+                if (!result.includes('ERROR')) {
+                    document.getElementById('receiptItems').value = '';
+                    document.getElementById('receiptAmount').value = '';
+                    document.getElementById('receiptCashier').value = '';
+                }
+            } catch (error) {
+                showError('Unable to connect to server. Please try again later.');
+            }
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        // Display username
+        if (document.getElementById('username')) {
+            document.getElementById('username').textContent = sessionStorage.getItem('username') || 'User';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        const card = input.closest('.card');
+                        const button = card.querySelector('button');
+                        if (button) button.click();
+                    }
+                });
+            });
+
+            viewInventory();
+        });
+    </script>
+</body>
+</html>

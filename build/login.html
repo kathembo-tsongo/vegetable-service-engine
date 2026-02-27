@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Vegetable Service Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .role-badge {
+            text-align: center;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .role-badge.manager {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .role-badge.cashier {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        .demo-credentials {
+            background: #e6fffa;
+            border-left: 4px solid #38b2ac;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .demo-credentials strong {
+            color: #234e52;
+        }
+
+        .demo-credentials code {
+            background: #b2f5ea;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <div id="roleBadge" class="role-badge"></div>
+        <h1>🔐 Login</h1>
+        <p class="subtitle">Enter your credentials to continue</p>
+
+        <!-- Demo Credentials Info -->
+        <div class="demo-credentials">
+            <strong>Demo Credentials:</strong><br>
+            <span id="demoInfo"></span>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password" required>
+            </div>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <div class="back-link">
+            <a href="index.html">← Back to role selection</a>
+        </div>
+    </div>
+
+    <script>
+        // Get role from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const role = urlParams.get('role');
+
+        // Demo credentials
+        const credentials = {
+            manager: {
+                username: 'admin',
+                password: 'admin123',
+                redirect: 'manager.html'
+            },
+            cashier: {
+                username: 'cashier',
+                password: 'cash123',
+                redirect: 'cashier.html'
+            }
+        };
+
+        // Set role-specific styling and info
+        if (role === 'manager') {
+            document.getElementById('roleBadge').textContent = '🔧 MANAGER LOGIN';
+            document.getElementById('roleBadge').classList.add('manager');
+            document.getElementById('demoInfo').innerHTML = 'Username: <code>admin</code><br>Password: <code>admin123</code>';
+        } else if (role === 'cashier') {
+            document.getElementById('roleBadge').textContent = '💰 CASHIER LOGIN';
+            document.getElementById('roleBadge').classList.add('cashier');
+            document.getElementById('demoInfo').innerHTML = 'Username: <code>cashier</code><br>Password: <code>cash123</code>';
+        } else {
+            // Invalid role, redirect back
+            window.location.href = 'index.html';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Validate credentials
+            if (credentials[role] && 
+                username === credentials[role].username && 
+                password === credentials[role].password) {
+                
+                // Store session
+                sessionStorage.setItem('loggedIn', 'true');
+                sessionStorage.setItem('role', role);
+                sessionStorage.setItem('username', username);
+
+                // Redirect to appropriate portal
+                window.location.href = credentials[role].redirect;
+            } else {
+                // Show error
+                errorMessage.textContent = '❌ Invalid username or password';
+                errorMessage.style.display = 'block';
+                
+                // Clear password field
+                document.getElementById('password').value = '';
+
+                // Hide error after 3 seconds
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>
