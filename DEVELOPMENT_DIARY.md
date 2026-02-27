@@ -214,6 +214,16 @@ vegetable-service-engine/
    Press `Ctrl+C` in the RMI terminal
 
 ---
+### Redeploy
+cd ~/vegetable-service-engine/build
+jar -cvf vegetable-service.war *
+~/apache-tomcat-9.0.93/bin/shutdown.sh
+sleep 3
+rm -rf ~/apache-tomcat-9.0.93/webapps/vegetable-service*
+cp vegetable-service.war ~/apache-tomcat-9.0.93/webapps/
+~/apache-tomcat-9.0.93/bin/startup.sh
+sleep 15
+================================
 
 ## Testing Checklist
 

@@ -83,20 +83,27 @@ Educational Project - 2026
 
 IMPORTANT NOTES 
 
-1.Running the app
+### Running the app
 
-cd ~/apache-tomcat-9.0.93 ./bin/startup.sh
+cd ~/apache-tomcat-9.0.93 && ./bin/startup.sh
 
-connect rmi
+### connect rmi
 cd ~/vegetable-service-engine
 java -Djava.rmi.server.hostname=localhost -cp classes rmi.VegetableComputeEngine
 
-You should see:
+### if it refuse try this:
+cd ~/vegetable-service-engine
+javac -d build/classes src/rmi/*.java
+**Then**
+cd build
+java -Djava.rmi.server.hostname=localhost -cp classes rmi.VegetableComputeEngine
+
+**You should see:**
 
 VegetableComputeEngine is running on port 1099...
 Initial vegetable prices loaded.
 
-Keep this terminal open and running!** The RMI server must stay running for the web application to work.
+#### Keep this terminal open and running!** The RMI server must stay running for the web application to work.
 
 Once the RMI server is running, go back to your browser and refresh the page:
 
