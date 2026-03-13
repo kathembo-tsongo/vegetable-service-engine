@@ -1,8 +1,8 @@
-# 🥬 Vegetable Service Engine 🥕
+#  Vegetable Service Engine 
 
 A professional **3-tier distributed system** for managing vegetable inventory and point-of-sale transactions using **Java RMI, Servlets, and Web Technologies**.
 
-## 📋 Table of Contents
+##  Table of Contents
 
 - [Features](#features)
 - [System Architecture](#system-architecture)
@@ -19,29 +19,29 @@ A professional **3-tier distributed system** for managing vegetable inventory an
 
 ---
 
-## ✨ Features
+##  Features
 
 ### Manager Portal
-- ➕ Add new vegetables with prices
-- ✏️ Update existing vegetable prices
-- 🗑️ Delete vegetables from inventory
-- 📋 View complete inventory list
+-  Add new vegetables with prices
+-  Update existing vegetable prices
+-  Delete vegetables from inventory
+-  View complete inventory list
 
 ### Cashier Portal
-- 🧮 Calculate costs for individual items
-- 🧾 Generate transaction receipts with change calculation
-- 💰 Process multi-item sales
-- 📊 View current price list
+- Calculate costs for individual items
+- Generate transaction receipts with change calculation
+- Process multi-item sales
+- View current price list
 
 ### Security Features
-- 🔐 Role-based authentication (Manager/Cashier)
-- 🛡️ Session management
-- 🚫 Secure error handling (no stack trace exposure)
-- 👤 User-specific access control
+-  Role-based authentication (Manager/Cashier)
+-  Session management
+-  Secure error handling (no stack trace exposure)
+-  User-specific access control
 
 ---
 
-## 🏗️ System Architecture
+##  System Architecture
 ```
 ┌──────────────────────────────────────────────────────────┐
 │                  CLIENT LAYER (Web Browser)              │
@@ -91,7 +91,7 @@ A professional **3-tier distributed system** for managing vegetable inventory an
 
 ---
 
-## 📦 Installation
+##  Installation
 
 ### Step 1: Clone/Download Project
 ```bash
@@ -149,7 +149,7 @@ cp vegetable-service.war ~/apache-tomcat-9.0.93/webapps/
 
 ---
 
-## 🚀 Running the Application
+##  Running the Application
 
 ### Step 1: Start RMI Server (Backend)
 
@@ -165,7 +165,7 @@ VegetableComputeEngine is running on port 1099...
 Initial vegetable prices loaded.
 ```
 
-⚠️ **IMPORTANT:** Keep this terminal open! The RMI server must remain running.
+ **IMPORTANT:** Keep this terminal open! The RMI server must remain running.
 
 **Alternative (if above fails):**
 ```bash
@@ -317,7 +317,7 @@ Change Due:               $ 12.75
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 ```
 vegetable-service-engine/
 ├── src/
